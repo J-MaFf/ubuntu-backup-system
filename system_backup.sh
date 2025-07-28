@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# Improved Ubuntu System Backup Script
-# This script creates a backup strategy that works with live systems
+# Ubuntu System Backup Script
+# This script creates a complete system backup using rsync
 
 BACKUP_DIR="/mnt/storage/system-backups"
-SNAPSHOT_DIR="/mnt/snapshots/system"
 DATE=$(date +%Y-%m-%d_%H-%M-%S)
 BACKUP_NAME="ubuntu_backup_$DATE"
 
@@ -12,11 +11,10 @@ echo "=================================================="
 echo "Creating system backup: $BACKUP_NAME"
 echo "=================================================="
 
-# Create backup directories
+# Create backup directory
 sudo mkdir -p "$BACKUP_DIR"
-sudo mkdir -p "$SNAPSHOT_DIR"
 
-# Method 1: Use rsync for live system backup (works while system is running)
+# Create rsync backup (works on live systems)
 echo "Creating live system backup using rsync..."
 BACKUP_PATH="$BACKUP_DIR/$BACKUP_NAME"
 sudo mkdir -p "$BACKUP_PATH"

@@ -1,0 +1,17 @@
+# Recommended backup schedule for Ubuntu system
+# Copy and paste these lines into your crontab (crontab -e)
+
+# Daily config backup at 2:00 AM (quick, small backup)
+0 2 * * * /home/joey/btrfs-backup/config_backup.sh >> /var/log/config_backup.log 2>&1
+
+# Weekly full system backup at 3:00 AM on Sundays (large backup)
+0 3 * * 0 sudo /home/joey/btrfs-backup/system_backup.sh >> /var/log/system_backup.log 2>&1
+
+# Optional: Daily status check at 8:00 AM (see backup health)
+# 0 8 * * * /home/joey/btrfs-backup/backup_status.sh >> /var/log/backup_status.log 2>&1
+
+# Installation:
+# 1. Run: crontab -e
+# 2. Copy the uncommented lines above
+# 3. Save and exit
+# 4. Verify with: crontab -l

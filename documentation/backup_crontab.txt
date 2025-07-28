@@ -1,0 +1,20 @@
+# Ubuntu System Backup Cron Jobs
+# Automated backup scheduling for /home/joey/btrfs-backup/ scripts
+
+# Daily config backup - 2:00 AM every day
+0 2 * * * /home/joey/btrfs-backup/config_backup.sh >> /var/log/config_backup.log 2>&1
+
+# Weekly full system backup - 3:00 AM every Sunday
+0 3 * * 0 sudo /home/joey/btrfs-backup/system_backup.sh >> /var/log/system_backup.log 2>&1
+
+# Daily backup status check - 6:00 AM every day (optional)
+0 6 * * * /home/joey/btrfs-backup/backup_status.sh >> /var/log/backup_status.log 2>&1
+
+# Monthly backup integrity test - 4:00 AM first day of month (optional)
+0 4 1 * * /home/joey/btrfs-backup/test_backup_system.sh >> /var/log/backup_test.log 2>&1
+
+# Installation commands:
+# 1. Edit your crontab: crontab -e
+# 2. Add the lines you want from above
+# 3. Save and exit
+# 4. Verify with: crontab -l
