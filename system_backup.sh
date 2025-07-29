@@ -4,7 +4,8 @@
 # This script creates a complete system backup using rsync
 
 BACKUP_DIR="/mnt/storage/system-backups"
-DATE=$(date +%Y-%m-%d_%H-%M-%S)
+# Use d-m-yyyy_H:MM AM/PM format
+DATE=$(date +%d-%m-%Y_%I-%M_%p)
 BACKUP_NAME="ubuntu_backup_$DATE"
 
 echo "=================================================="
@@ -25,20 +26,20 @@ sudo rsync -aAXH --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/
 
 if [ $? -eq 0 ]; then
     echo "SUCCESS: System backup created at $BACKUP_PATH"
-    
+
     # Create a manifest file
     echo "Backup created: $(date)" | sudo tee "$BACKUP_PATH/backup_info.txt"
     echo "Hostname: $(hostname)" | sudo tee -a "$BACKUP_PATH/backup_info.txt"
     echo "Kernel: $(uname -r)" | sudo tee -a "$BACKUP_PATH/backup_info.txt"
     echo "Backup method: rsync" | sudo tee -a "$BACKUP_PATH/backup_info.txt"
-    
+
     # Create package list for easy restoration
     dpkg --get-selections | sudo tee "$BACKUP_PATH/installed_packages.txt" >/dev/null
-    
+
     # Backup important configuration
     sudo cp /etc/fstab "$BACKUP_PATH/fstab.backup"
     sudo cp /etc/crypttab "$BACKUP_PATH/crypttab.backup" 2>/dev/null || true
-    
+
     echo "Package list and configuration files backed up"
 else
     echo "ERROR: Backup failed"

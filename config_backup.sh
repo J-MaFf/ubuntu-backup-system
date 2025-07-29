@@ -4,7 +4,8 @@
 # Backs up important config files and user data
 
 CONFIG_BACKUP_DIR="/mnt/storage/config-backups"
-DATE=$(date +%Y-%m-%d_%H-%M-%S)
+# Use m-d-yyyy_H:MM AM/PM format
+DATE=$(date +%m-%d-%Y_%I-%M_%p)
 BACKUP_NAME="config_backup_$DATE"
 
 echo "=================================================="
