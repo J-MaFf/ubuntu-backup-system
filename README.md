@@ -29,6 +29,6 @@ All detailed documentation is in the `documentation/` folder:
 
 - **System Backups**: `/mnt/storage/system-backups/`
 - **Config Backups**: `/mnt/storage/config-backups/`
-- **Scripts**: `/home/joey/btrfs-backup/`
+- **Scripts**: `/home/joey/homeserver/backups/btrfs-backup/`
 
 Your system is protected with tested, working backups on your 7.3TB drive!
