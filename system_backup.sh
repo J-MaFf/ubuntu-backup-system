@@ -1,4 +1,9 @@
 #!/bin/bash
+# To use Telegram alerts everywhere, add send_notification.py to your PATH:
+#   chmod +x /home/joey/homeserver/automation/notification/send_notification.py
+#   ln -s /home/joey/homeserver/automation/notification/send_notification.py ~/bin/send_notification
+# Now you can call 'send_notification' from any script.
+
 
 # Ubuntu System Backup Script
 # This script creates a complete system backup using rsync
@@ -12,37 +17,48 @@ echo "=================================================="
 echo "Creating system backup: $BACKUP_NAME"
 echo "=================================================="
 
-# Create backup directory
-sudo mkdir -p "$BACKUP_DIR"
 
-# Create rsync backup (works on live systems)
+# Create backup directory
+mkdir -p "$BACKUP_DIR"
+
 echo "Creating live system backup using rsync..."
 BACKUP_PATH="$BACKUP_DIR/$BACKUP_NAME"
-sudo mkdir -p "$BACKUP_PATH"
+
+mkdir -p "$BACKUP_PATH"
+
+echo "Backing up system directories..."
 
 # Backup critical system directories
 echo "Backing up system directories..."
-sudo rsync -aAXH --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/swapfile","/var/cache/*","/var/tmp/*"} / "$BACKUP_PATH/"
+rsync -aAXH --exclude={"/dev/*","/proc/*","/sys/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found","/swapfile","/var/cache/*","/var/tmp/*"} / "$BACKUP_PATH/"
 
+# Check if backup succeeded
 if [ $? -eq 0 ]; then
     echo "SUCCESS: System backup created at $BACKUP_PATH"
 
     # Create a manifest file
-    echo "Backup created: $(date)" | sudo tee "$BACKUP_PATH/backup_info.txt"
-    echo "Hostname: $(hostname)" | sudo tee -a "$BACKUP_PATH/backup_info.txt"
-    echo "Kernel: $(uname -r)" | sudo tee -a "$BACKUP_PATH/backup_info.txt"
-    echo "Backup method: rsync" | sudo tee -a "$BACKUP_PATH/backup_info.txt"
+    echo "Backup created: $(date)" | tee "$BACKUP_PATH/backup_info.txt"
+    echo "Hostname: $(hostname)" | tee -a "$BACKUP_PATH/backup_info.txt"
+    echo "Kernel: $(uname -r)" | tee -a "$BACKUP_PATH/backup_info.txt"
+    echo "Backup method: rsync" | tee -a "$BACKUP_PATH/backup_info.txt"
 
     # Create package list for easy restoration
-    dpkg --get-selections | sudo tee "$BACKUP_PATH/installed_packages.txt" >/dev/null
+    dpkg --get-selections | tee "$BACKUP_PATH/installed_packages.txt" >/dev/null
 
     # Backup important configuration
-    sudo cp /etc/fstab "$BACKUP_PATH/fstab.backup"
-    sudo cp /etc/crypttab "$BACKUP_PATH/crypttab.backup" 2>/dev/null || true
+    cp /etc/fstab "$BACKUP_PATH/fstab.backup"
+    cp /etc/crypttab "$BACKUP_PATH/crypttab.backup" 2>/dev/null || true
 
     echo "Package list and configuration files backed up"
+
+    # Get backup size
+    BACKUP_SIZE=$(du -sh "$BACKUP_PATH" | cut -f1)
+    # Send Telegram alert for success
+    send_notification "✅ System backup completed successfully!\nBackup: $BACKUP_NAME\nLocation: $BACKUP_PATH\nSize: $BACKUP_SIZE\nDate: $(date)\nHostname: $(hostname)"
 else
     echo "ERROR: Backup failed"
+    # Send Telegram alert for failure
+    send_notification "❌ System backup FAILED!\nBackup: $BACKUP_NAME\nLocation: $BACKUP_PATH\nDate: $(date)\nHostname: $(hostname)"
     exit 1
 fi
 
@@ -50,7 +66,7 @@ fi
 echo ""
 echo "Backup completed successfully:"
 echo "Location: $BACKUP_PATH"
-echo "Size: $(sudo du -sh "$BACKUP_PATH" | cut -f1)"
+echo "Size: $(du -sh "$BACKUP_PATH" | cut -f1)"
 echo ""
 
 # List recent backups

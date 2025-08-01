@@ -58,8 +58,12 @@ systemctl list-unit-files --type=service | sudo tee "$BACKUP_PATH/service_status
 BACKUP_SIZE=$(sudo du -sh "$BACKUP_PATH" | cut -f1)
 echo ""
 echo "Configuration backup completed:"
+
 echo "Location: $BACKUP_PATH"
 echo "Size: $BACKUP_SIZE"
+
+# Send Telegram notification for successful config backup
+send_notification "\u2705 Config backup completed successfully!\nBackup: $BACKUP_NAME\nLocation: $BACKUP_PATH\nSize: $BACKUP_SIZE\nDate: $(date)\nHostname: $(hostname)"
 
 # List recent config backups
 echo ""
