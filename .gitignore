@@ -1,6 +1,3 @@
-# Memory MCP server knowledge graph (workspace-local storage)
-knowledge-graph.jsonl
-
 # Backup artifacts
 *.bak
 *.backup
