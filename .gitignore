@@ -1,0 +1,19 @@
+# Memory MCP server knowledge graph (workspace-local storage)
+knowledge-graph.jsonl
+
+# Backup artifacts
+*.bak
+*.backup
+*.old
+
+# Temporary files
+*.tmp
+*.temp
+*~
+
+# Log files
+*.log
+
+# System files
+.DS_Store
+Thumbs.db
