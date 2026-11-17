@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "ubuntu_backup_system",
+  "project_id": "cb59d889-2531-4d19-90e4-44a2d60b7e9e"
+}
